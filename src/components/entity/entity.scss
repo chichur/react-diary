@@ -5,6 +5,14 @@
   margin-bottom: 15px;
 }
 
+.Entity:hover {
+  background-color: #d0f1ff;
+}
+
+.Entity:hover .fade:after{
+  background: linear-gradient(to right, rgba(208, 241, 255, 0), rgb(208, 241, 255) 50%);
+}
+
 .Entity p{
   font-weight: 600;
   margin-top: 0px;
@@ -55,4 +63,11 @@
 .Date {
   font-size: 15px;
   color: #0d9999;
+}
+
+.add {
+  height: 50px;
+  background-image: url("../../img/cross.svg");
+  background-repeat: no-repeat;
+  background-position: center;
 }

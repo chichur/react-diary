@@ -9,7 +9,7 @@ function Entity(props) {
         className = 'module expand';
     }
     return (
-        <div className="Entity" onClick={() => setExpand(true)}>
+        <div className="Entity" onClick={() => setExpand(prevState => !prevState)}>
             <p className="Date">{props.date}</p>
             <div className={className}>
                 <p className="Content">{props.content}</p>

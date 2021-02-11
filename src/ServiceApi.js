@@ -8,4 +8,9 @@ export default class DiaryService {
         const url = `${API_URL}/entities/?page=${page}`;
         return axios.get(url).then(response => response.data);
     }
+
+    postEntity(content) {
+        const url = `${API_URL}/entities/`;
+        return axios.post(url, content).then(response => response.data);
+    }
 }
