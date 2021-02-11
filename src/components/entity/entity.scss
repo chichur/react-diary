@@ -1,0 +1,58 @@
+.Entity {
+  background: white;
+  padding: 23px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+}
+
+.Entity p{
+  font-weight: 600;
+  margin-top: 0px;
+}
+
+.EntityViewer {
+  display: flex;
+  flex-direction: column;
+}
+
+.expand {
+  height: initial;
+}
+
+.expand p{
+  height: initial;
+  overflow: initial;
+  white-space: initial;
+  text-overflow: initial;
+}
+
+.module {
+  margin: 0 0 1em 0;
+  overflow: hidden;
+}
+
+.module p {
+  color: dimgray;
+  font-size: 20px;
+  margin: 0;
+}
+
+.fade {
+  position: relative;
+  height: 80px;
+}
+.fade:after {
+  content: "";
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 70%;
+  height: 26px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+}
+
+.Date {
+  font-size: 15px;
+  color: #0d9999;
+}
