@@ -71,3 +71,11 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+
+textarea {
+  overflow: hidden;
+  resize: none;
+  outline: none;
+  -moz-appearance: none;
+  border: none;
+}

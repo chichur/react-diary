@@ -2,6 +2,7 @@ import DiaryService from "../../ServiceApi";
 import Entity from "./Entity"
 import { useState, useEffect } from "react";
 import { Formik } from 'formik';
+import autosize from "autosize"
 import "./entity.scss"
 
 const diaryService = new DiaryService()
@@ -11,8 +12,12 @@ function EntityViewer() {
     const [mode, setMode] = useState(false) // false -> view mode; true -> new entity mode
 
     useEffect(() => {
-        diaryService.getEntities(1).then(result => setEntities(result.results))
-    }, []);
+        diaryService.getEntities(1).then(result => setEntities(result.results));
+        autosize(document.querySelector('textarea'));
+        return () => {
+            autosize.destroy(document.querySelectorAll('textarea'));
+        }
+    }, [mode]);
 
     let lstEntities = entities.map((entity, key) => <Entity key={key}
                                                             date={entity.pub_date}
@@ -32,13 +37,10 @@ function EntityViewer() {
 
                         return errors;
                     }}
-                    onSubmit={(values, { setSubmitting }) => {
-                        setTimeout(() => {
-                            diaryService.postEntity(values)
-                                .then(() =>  setSubmitting(false))
-                                .catch(() => console.log('уу сука'))
-                        }, 400);
-                    }}
+                    onSubmit={(values, { setSubmitting }) => diaryService.postEntity(values)
+                                .then(() =>  {setSubmitting(false)
+                                              setMode(false)})
+                                .catch(() => console.log('Connection error'))}
                 >
                     {({
                           values,
@@ -52,6 +54,7 @@ function EntityViewer() {
                       }) => (
                         <form onSubmit={handleSubmit}>
                             <textarea
+                                placeholder="To cry here..."
                                 name="content"
                                 onChange={handleChange}
                                 value={values.content}
@@ -75,18 +78,3 @@ function EntityViewer() {
 }
 
 export default EntityViewer;
-
-// Мэри, Мэри.
-// После встречи с тобой,
-// Мое тело горит,
-// Как после крещенской купели.
-/*********************************/
-// Знаю что зовут вас не Мэри.
-// Ваши просьбы,
-// Обращаться на "Вы"
-// Уже надоели.
-/*********************************/
-// Извольте простить.
-// Так ты Мэри!?
-// Будьте добры,
-// Назовите имя скорее...
