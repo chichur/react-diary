@@ -1,6 +1,6 @@
 import DiaryService from "../../ServiceApi";
 import Entity from "./Entity"
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Formik } from 'formik';
 import autosize from "autosize"
 import "./entity.scss"
@@ -9,15 +9,19 @@ const diaryService = new DiaryService()
 
 function EntityViewer() {
     const [entities, setEntities] = useState([]);
-    const [mode, setMode] = useState(false) // false -> view mode; true -> new entity mode
+    const [mode, setMode] = useState(false); // false -> view mode; true -> new entity mode
+    const [page, setPage] = useState(1);
+    const loadMoreButton = useRef(null);
+
+    //todo: pagination
 
     useEffect(() => {
-        diaryService.getEntities(1).then(result => setEntities(result.results));
+        diaryService.getEntities(page).then(result => setEntities(prevState => prevState.concat(result.results)));
         autosize(document.querySelector('textarea'));
         return () => {
             autosize.destroy(document.querySelectorAll('textarea'));
         }
-    }, [mode]);
+    }, [mode, page]);
 
     let lstEntities = entities.map((entity, key) => <Entity key={key}
                                                             date={entity.pub_date}
@@ -26,7 +30,6 @@ function EntityViewer() {
     if (mode)
         return (
             <div className="EntityViewer">
-                <h1>Anywhere in your app!</h1>
                 <Formik
                     initialValues={{ content: ''}}
                     validate={values => {
@@ -53,16 +56,27 @@ function EntityViewer() {
                           /* and other goodies */
                       }) => (
                         <form onSubmit={handleSubmit}>
+                            <h1>Add new entity</h1>
+                            <p style={{color: 'red'}}>{errors.content}</p>
                             <textarea
                                 placeholder="To cry here..."
                                 name="content"
                                 onChange={handleChange}
                                 value={values.content}
                             />
-                            {errors.content}
-                            <button type="submit" disabled={isSubmitting}>
-                                Submit
-                            </button>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <select
+                                    name="happy_tracker"
+                                >
+                                    <option value="" label="Select a color" />
+                                    <option value="red" label="red" />
+                                    <option value="blue" label="blue" />
+                                    <option value="green" label="green" />
+                                </select>
+                                <button type="submit" disabled={isSubmitting}>
+                                    Submit
+                                </button>
+                            </div>
                         </form>
                     )}
                 </Formik>
@@ -73,6 +87,9 @@ function EntityViewer() {
             <div className="EntityViewer">
                 <div className="Entity add" onClick={() => setMode(prevState => !prevState)}/>
                 {lstEntities}
+                <div className="Entity more" ref={loadMoreButton} onClick={onButtonClick}>
+                    <p>Load more</p>
+                </div>
             </div>
         );
 }

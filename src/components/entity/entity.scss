@@ -1,8 +1,21 @@
-.Entity {
+$primary_color: dimgray;
+$second_color: #0d9999;
+
+@mixin content() {
   background: white;
   padding: 23px;
   border-radius: 20px;
   margin-bottom: 15px;
+}
+
+@mixin regular_font($color, $font_size) {
+  color: $color;
+  font-size: $font_size;
+  font-weight: 600;
+}
+
+.Entity {
+  @include content();
 }
 
 .Entity:hover {
@@ -13,8 +26,8 @@
   background: linear-gradient(to right, rgba(208, 241, 255, 0), rgb(208, 241, 255) 50%);
 }
 
-.Entity p{
-  font-weight: 600;
+.Content {
+  @include regular_font(dimgray, 20px);
   margin-top: 0px;
 }
 
@@ -40,8 +53,6 @@
 }
 
 .module p {
-  color: dimgray;
-  font-size: 20px;
   margin: 0;
 }
 
@@ -61,8 +72,9 @@
 }
 
 .Date {
-  font-size: 15px;
-  color: #0d9999;
+  //font-size: 15px;
+  //color: #0d9999;
+  @include regular_font(#0d9999, 15px)
 }
 
 .add {
@@ -73,9 +85,35 @@
 }
 
 textarea {
+  @include regular_font(dimgray, 20px);
   overflow: hidden;
   resize: none;
   outline: none;
+  width: 100%;
   -moz-appearance: none;
   border: none;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+h1 {
+  margin-top: 0px;
+  color: #0d9999;
+}
+
+form {
+  @include content();
+  display: block;
+}
+
+.more {
+  padding: 10px;
+  height: 100%;
+  text-align: center;
+  @include regular_font($second_color, 20px)
+}
+
+.more p{
+  margin: 0px;
 }
