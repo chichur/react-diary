@@ -1,6 +1,6 @@
 import DiaryService from "../../ServiceApi";
 import Entity from "./Entity"
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Formik } from 'formik';
 import autosize from "autosize"
 import "./entity.scss"
@@ -11,17 +11,21 @@ function EntityViewer() {
     const [entities, setEntities] = useState([]);
     const [mode, setMode] = useState(false); // false -> view mode; true -> new entity mode
     const [page, setPage] = useState(1);
-    const loadMoreButton = useRef(null);
-
-    //todo: pagination
+    const [next, setNext] = useState(null);
 
     useEffect(() => {
-        diaryService.getEntities(page).then(result => setEntities(prevState => prevState.concat(result.results)));
+        diaryService.getEntities(page).then(result => {setEntities(prevState => prevState.concat(result.results));
+                                                       setNext(result.next);});
         autosize(document.querySelector('textarea'));
         return () => {
             autosize.destroy(document.querySelectorAll('textarea'));
         }
-    }, [mode, page]);
+    }, [page]);
+
+    useEffect(() => {
+        diaryService.getEntities(1).then(result => {setEntities(result.results);
+            setNext(result.next);});
+    }, [mode]);
 
     let lstEntities = entities.map((entity, key) => <Entity key={key}
                                                             date={entity.pub_date}
@@ -41,8 +45,8 @@ function EntityViewer() {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => diaryService.postEntity(values)
-                                .then(() =>  {setSubmitting(false)
-                                              setMode(false)})
+                                .then(() =>  {setSubmitting(false);
+                                              setMode(false);})
                                 .catch(() => console.log('Connection error'))}
                 >
                     {({
@@ -87,9 +91,10 @@ function EntityViewer() {
             <div className="EntityViewer">
                 <div className="Entity add" onClick={() => setMode(prevState => !prevState)}/>
                 {lstEntities}
-                <div className="Entity more" ref={loadMoreButton} onClick={onButtonClick}>
+                {next ?
+                    <div className="Entity more" onClick={() => setPage(prevState => prevState + 1)}>
                     <p>Load more</p>
-                </div>
+                    </div> : null}
             </div>
         );
 }
