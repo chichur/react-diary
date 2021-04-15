@@ -1,11 +1,18 @@
 import DiaryService from "../../ServiceApi";
 import Entity from "./Entity"
 import { useState, useEffect } from "react";
-import { Formik } from 'formik';
+import { Formik } from "formik";
 import autosize from "autosize"
 import "./entity.scss"
+import "datejs"
 
 const diaryService = new DiaryService()
+
+function formatDate(str_date) {
+    let date = new Date();
+    date.setTime(Date.parse(str_date));
+    return date.format("d M Y G:i")
+}
 
 function EntityViewer() {
     const [entities, setEntities] = useState([]);
@@ -16,19 +23,19 @@ function EntityViewer() {
     useEffect(() => {
         diaryService.getEntities(page).then(result => {setEntities(prevState => prevState.concat(result.results));
                                                        setNext(result.next);});
-        autosize(document.querySelector('textarea'));
-        return () => {
-            autosize.destroy(document.querySelectorAll('textarea'));
-        }
     }, [page]);
 
     useEffect(() => {
         diaryService.getEntities(1).then(result => {setEntities(result.results);
             setNext(result.next);});
+        autosize(document.querySelector('textarea'));
+        return () => {
+            autosize.destroy(document.querySelectorAll('textarea'));
+        }
     }, [mode]);
 
     let lstEntities = entities.map((entity, key) => <Entity key={key}
-                                                            date={entity.pub_date}
+                                                            date={formatDate(entity.pub_date)}
                                                             content={entity.content}/>)
 
     if (mode)
@@ -41,7 +48,9 @@ function EntityViewer() {
                         if (!values.content) {
                             errors.content = 'Required';
                         }
-
+                        else if(values.content.length < 200) {
+                            errors.content = 'Text must be more than 200 characters';
+                        }
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => diaryService.postEntity(values)
@@ -72,10 +81,11 @@ function EntityViewer() {
                                 <select
                                     name="happy_tracker"
                                 >
-                                    <option value="" label="Select a color" />
-                                    <option value="red" label="red" />
-                                    <option value="blue" label="blue" />
-                                    <option value="green" label="green" />
+                                    <option value="1" label="awful" />
+                                    <option value="2" label="worse" />
+                                    <option value="3" label="usual" />
+                                    <option value="4" label="good" />
+                                    <option value="5" label="excellent" />
                                 </select>
                                 <button type="submit" disabled={isSubmitting}>
                                     Submit
